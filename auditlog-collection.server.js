@@ -82,10 +82,12 @@ AuditLog.attachSchema(AuditLogSchema);
 AuditLog.assignCallbacks = function(COL, options) {
   options = options || {};
   var collectionName = options.name || COL._name || 'unknown';
+  var username = options.username || 'Username not found';
   COL.after.update(function (userId, doc, fieldNames, modifier, updateOptions) {
     return AuditLog._update(
       collectionName,
       userId,
+      username,
       doc,
       this.previous,
       fieldNames,
@@ -95,10 +97,10 @@ AuditLog.assignCallbacks = function(COL, options) {
     );
   });
   COL.after.remove(function(userId, doc){
-    return AuditLog._remove(collectionName, userId, doc, options);
+    return AuditLog._remove(collectionName, userId, username, doc, options);
   });
   COL.after.insert(function(userId, doc) {
-    return AuditLog._insert(collectionName, userId, doc, options);
+    return AuditLog._insert(collectionName, userId, username, doc, options);
   });
 };
 
@@ -109,7 +111,6 @@ AuditLog.assignCallbacks = function(COL, options) {
 AuditLog._insert = function(collectionName, userId, doc, options) {
   check(collectionName, String);
   var r = AuditLog.getDiffOldNew({}, doc, options);
-  var username = Meteor.user().profile.name || 'No Name Found';
   /*
   console.log({
     what:"_insert()",
@@ -147,6 +148,7 @@ AuditLog._remove = function(collectionName, userId, doc, options) {
   if (!r) return;
   var obj = {
     userId: userId,
+    username: username,
     docId: doc._id || undefined,
     collection: collectionName,
     action: "remove",
@@ -174,6 +176,7 @@ AuditLog._update = function(collectionName, userId, doc, old, fieldNames, modifi
   var obj = {
     userId: userId,
     docId: doc._id,
+    username: username,
     collection: collectionName,
     action: "update",
     modifier: modifier,

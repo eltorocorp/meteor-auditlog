@@ -13,7 +13,6 @@ Meteor.methods({
     }
     AuditLog.insert({
       userId: Meteor.userId(),
-      username: Meteor.user().profile.name || 'No Name Found',
       docId: doc._id || undefined,
       action: action,
       collection: collection,
@@ -22,7 +21,6 @@ Meteor.methods({
   },
   AuditLog: function(obj) {
     obj.userId = Meteor.userId();
-    obj.username = Meteor.user().profile.name || 'No Name Found',
     AuditLog.insert(obj);
   }
 });
