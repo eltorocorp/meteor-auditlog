@@ -1,6 +1,6 @@
 # AuditLog
 
-    meteor add zeroasterisk:auditlog
+    meteor add eltorocorp:auditlog
 
 Then you need to assign these hooks to your collections, on the server only:
 
