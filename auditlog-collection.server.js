@@ -121,8 +121,6 @@ AuditLog._insert = function(collectionName, userId, doc, options) {
   });
   */
   if (!r) return;
-  console.log('insertLog', Meteor.user());
-  console.log('insertLogOptions', options);
   if (Meteor.isServer) {
     var username = Meteor.user().profile.name;
   } else ( username = 'Can not find username');
@@ -178,8 +176,6 @@ AuditLog._update = function(collectionName, userId, doc, old, fieldNames, modifi
   });
   */
   // only logs if something has changed
-  console.log('UpdateLog', Meteor.user());
-  console.log('UpdateLogOptions', options);
   if (!r) return;
   if (Meteor.isServer) {
     var username = Meteor.user().profile.name;
