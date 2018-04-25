@@ -82,11 +82,10 @@ AuditLog.attachSchema(AuditLogSchema);
 AuditLog.assignCallbacks = function(COL, options) {
   options = options || {};
   var collectionName = options.name || COL._name || 'unknown';
-  COL.after.update(function (userId, username, doc, fieldNames, modifier, updateOptions) {
+  COL.after.update(function (userId, doc, fieldNames, modifier, updateOptions) {
     return AuditLog._update(
       collectionName,
       userId,
-      username,
       doc,
       this.previous,
       fieldNames,
@@ -95,11 +94,11 @@ AuditLog.assignCallbacks = function(COL, options) {
       options
     );
   });
-  COL.after.remove(function(userId, username, doc){
-    return AuditLog._remove(collectionName, userId, username, doc, options);
+  COL.after.remove(function(userId, doc){
+    return AuditLog._remove(collectionName, userId, doc, options);
   });
-  COL.after.insert(function(userId, username, doc) {
-    return AuditLog._insert(collectionName, userId, username, doc, options);
+  COL.after.insert(function(userId, doc) {
+    return AuditLog._insert(collectionName, userId, doc, options);
   });
 };
 
@@ -107,7 +106,7 @@ AuditLog.assignCallbacks = function(COL, options) {
 // -- functions to transform data for AuditLog
 // --------------------------------------------------------------------------
 
-AuditLog._insert = function(collectionName, userId, username, doc, options) {
+AuditLog._insert = function(collectionName, userId, doc, options) {
   check(collectionName, String);
   var r = AuditLog.getDiffOldNew({}, doc, options);
   /*
@@ -123,7 +122,6 @@ AuditLog._insert = function(collectionName, userId, username, doc, options) {
   if (!r) return;
   var obj = {
     userId: userId,
-    username: username,
     docId: doc._id || undefined,
     collection: collectionName,
     action: "insert",
@@ -131,7 +129,7 @@ AuditLog._insert = function(collectionName, userId, username, doc, options) {
   };
   AuditLog.insert(obj, {validate: false});
 };
-AuditLog._remove = function(collectionName, userId, username, doc, options) {
+AuditLog._remove = function(collectionName, userId, doc, options) {
   check(collectionName, String);
   var r = AuditLog.getDiffOldNew(doc, {}, options);
   /*
@@ -147,7 +145,6 @@ AuditLog._remove = function(collectionName, userId, username, doc, options) {
   if (!r) return;
   var obj = {
     userId: userId,
-    username: username,
     docId: doc._id || undefined,
     collection: collectionName,
     action: "remove",
@@ -155,7 +152,7 @@ AuditLog._remove = function(collectionName, userId, username, doc, options) {
   };
   AuditLog.insert(obj, {validate: false});
 };
-AuditLog._update = function(collectionName, userId, username, doc, old, fieldNames, modifier, updateOptions, options) {
+AuditLog._update = function(collectionName, userId, doc, old, fieldNames, modifier, updateOptions, options) {
   var r = AuditLog.getDiffOldNew(old, doc, options);
   /*
   console.log({
@@ -174,7 +171,6 @@ AuditLog._update = function(collectionName, userId, username, doc, old, fieldNam
   //TODO validate is failing for me on result... don't know why
   var obj = {
     userId: userId,
-    username: username,
     docId: doc._id,
     collection: collectionName,
     action: "update",
