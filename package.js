@@ -1,6 +1,6 @@
 Package.describe({
   name: "eltorocorp:auditlog",
-  version: "0.0.30",
+  version: "0.0.31",
   summary: "Simple, generic, extensible audit logging on collection insert, update, upsert, remove",
   git: "https://github.com/eltorocorp/meteor-auditlog",
   documentation: "README.md"
