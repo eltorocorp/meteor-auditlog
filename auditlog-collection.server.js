@@ -109,6 +109,7 @@ AuditLog.assignCallbacks = function(COL, options) {
 AuditLog._insert = function(collectionName, userId, doc, options) {
   check(collectionName, String);
   var r = AuditLog.getDiffOldNew({}, doc, options);
+  var username = Meteor.user().profile.name || 'No Name Found';
   /*
   console.log({
     what:"_insert()",
@@ -122,6 +123,7 @@ AuditLog._insert = function(collectionName, userId, doc, options) {
   if (!r) return;
   var obj = {
     userId: userId,
+    username: username,
     docId: doc._id || undefined,
     collection: collectionName,
     action: "insert",
