@@ -7,11 +7,8 @@ AuditLog.allow({
 Meteor.methods({
   AuditDoc: function(collection, action, doc, old) {
     if (Meteor.isServer) {
-      console.log('doc', doc);
-      console.log('old', old);
       var r = AuditLog.getDiffOldNew(old || {}, doc);
       var username = Meteor.user().profile.name;
-      console.log('r', r);
     } else {
       var r = [ {"kind":"D","path":["*"],"lhs":doc} ];
       var username = 'SYSTEM';

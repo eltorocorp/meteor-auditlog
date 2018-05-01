@@ -195,7 +195,6 @@ AuditLog._update = function(collectionName, userId, doc, old, fieldNames, modifi
 };
 AuditLog.getDiffOldNew = function(oldDoc, newDoc, options) {
   if (options) {
-    console.log('victor options', options);
     if (options.omit) {
       oldDoc = _.omit(oldDoc, options.omit);
       newDoc = _.omit(newDoc, options.omit);
@@ -205,7 +204,6 @@ AuditLog.getDiffOldNew = function(oldDoc, newDoc, options) {
       newDoc = options.transform.bind({isNew: true}, newDoc)();
     }
   }
-  console.log('victor diff', Npm.require("deep-diff").diff(oldDoc, newDoc));
   return Npm.require("deep-diff").diff(oldDoc, newDoc);
 };
 
